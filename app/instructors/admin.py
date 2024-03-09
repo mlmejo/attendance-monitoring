@@ -46,11 +46,16 @@ def edit(instructor_id):
     instructor = Instructor.query.get_or_404(instructor_id)
     departments = Department.query.all()
     form = InstructorForm(obj=instructor.user)
+    form.password.data = ""
 
     if form.validate_on_submit():
         instructor.department_id = form.department_id.data
         instructor.user.name = form.name.data
         instructor.user.email = form.email.data
+
+        password = form.password.data
+        if password:
+            instructor.user.password = generate_password_hash(password)
 
         db.session.commit()
 

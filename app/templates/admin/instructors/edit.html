@@ -40,6 +40,11 @@
                     {{ form.email(class="form-control") }}
                 </div>
 
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="Leave empty to use old password") }}
+                </div>
+
                 <div>
                     <a href="/admin/instructors" class="btn btn-secondary">
                         Cancel

@@ -9,7 +9,7 @@ class InstructorForm(Form):
     department_id = SelectField('Department')
     name = StringField('Instructor name', validators=[DataRequired()])
     email = EmailField('Email address', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
