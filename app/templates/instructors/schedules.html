@@ -1,0 +1,68 @@
+{% extends "layouts/instructor.html" %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/my-schedules">My Schedules</a>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="h5 mb-3 fw-bold">{{ current_user.name }}'s schedules</h2>
+
+            <div class="table-responsive">
+                <table id="schedules-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Descriptive title</th>
+                            <th>Course number</th>
+                            <th>Room</th>
+                            <th>Day & Time</th>
+                            <th class="text-center">Units</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for faculty_load in current_user.instructor.faculty_loads %}
+                            <tr>
+                                <td>
+                                    {{ faculty_load.subject.descriptive_title }}
+                                </td>
+                                <td>
+                                    {{ faculty_load.subject.course_number }}
+                                </td>
+                                <td>
+                                    {{ faculty_load.room }}
+                                </td>
+                                <td>
+                                    {{ faculty_load.day }}
+                                    {{ faculty_load.time_start }}
+                                    - {{ faculty_load.time_end }}
+                                </td>
+                                <td class="text-center">
+                                    {{ faculty_load.subject.units }}
+                                </td>
+                                <td class="text-end">
+                                    <a
+                                        href="/my-schedules/{{ faculty_load.id }}"
+                                        class="badge text-decoration-none text-bg-success">
+                                        View details
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#schedules-table");
+    </script>
+{% endblock %}

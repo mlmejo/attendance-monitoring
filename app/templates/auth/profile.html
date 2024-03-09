@@ -1,0 +1,46 @@
+{% if current_user.is_admin %}
+    {% extends "layouts/admin.html" %}
+{% elif current_user.is_instructor %}
+    {% extends "layouts/instructor.html" %}
+{% elif current_user.is_student %}
+    {% extends "layouts/student.html" %}
+{% endif %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="h4 fw-bold">User profile</h1>
+
+            <form action="" method="post" style="max-width: 28rem;">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+
+                    {% if not form.email.errors %}
+                        {{ form.email(class="form-control") }}
+                    {% else %}
+                        {{ form.email(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {{ form.email.errors[0] }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="Leave empty to use old password") }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Update profile
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

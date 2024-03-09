@@ -1,0 +1,133 @@
+{% extends "layouts/instructor.html" %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/my-schedules">My Schedules</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ faculty_load.subject.descriptive_title }}
+            </li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="h5 fw-bold">Schedule details</h2>
+            <p class="mb-0 text-muted">
+                Descriptive title: {{ faculty_load.subject.descriptive_title }}
+            </p>
+            <p class="mb-0 text-muted">
+                Course number: {{ faculty_load.subject.course_number }}
+            </p>
+            <p class="mb-0 text-muted">
+                Lecture hours: {{ faculty_load.subject.lecture_hours }}
+            </p>
+            <p class="mb-0 text-muted">
+                Laboratory hours: {{ faculty_load.subject.laboratory_hours }}
+            </p>
+            <p class="mb-0 text-muted">
+                Units: {{ faculty_load.subject.units }}
+            </p>
+            <p class="mb-0 text-muted">
+                Room: {{ faculty_load.room }}
+            </p>
+            <p class="text-muted">
+                Day & Time: {{ faculty_load.day }}
+                {{ faculty_load.time_start.strftime('%I:%M %p') }}
+                - {{ faculty_load.time_end.strftime('%I:%M %p') }}
+            </p>
+
+            <div class="mb-3">
+                <button
+                    id="generate-qr"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#qrModal">
+                    Generate QR
+                </button>
+                <a
+                    href="/schedules/{{ faculty_load.id }}/attendance"
+                    class="btn btn-secondary">
+                    View Attendance
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table id="students-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Student name</th>
+                            <th>Course</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in faculty_load.students %}
+                            <tr>
+                                <td>{{ student.user.name }}</td>
+                                <td>{{ student.course.name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="qrModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="qrModalLabel">
+                        Generate QR Attendance
+                    </h1>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#students-table");
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const generateQR = document.getElementById("generate-qr");
+
+            generateQR.addEventListener("click", function () {
+                const formData = new FormData();
+
+                formData.append("faculty_load_id", "{{ faculty_load.id }}");
+
+                fetch("/qrcodes", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token()}}",
+                    },
+                    body: formData,
+                })
+                    .then((response) => response.text())
+                    .then((html) => {
+                        const modalBody = document.querySelector(".modal-body");
+                        modalBody.innerHTML = html;
+                    });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1 class="h4 fw-bold">Schedules</h1>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="student_id" class="form-label">Student</label>
+                    <select
+                        name="student_id"
+                        id="student_id"
+                        class="form-select">
+                        <option value="0" disabled selected>
+                            Select an option
+                        </option>
+                        {% for student in students %}
+                            <option value="{{ student.id }}">
+                                {{ student.user.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="schedules">
+        <div class="card">
+            <div class="card-body">
+                <p class="mb-0">Select a student to view load.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function handleAddLoad(event) {
+            event.preventDefault();
+
+            const studentId = document.getElementById("student_id");
+            const formData = new FormData();
+
+            formData.append("student_id", studentId.value);
+            formData.append("faculty_load_id", this.dataset.load);
+
+            fetch(`/admin/schedules`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token() }}",
+                },
+                body: formData,
+            }).then((response) => {
+                if (!response.ok) return;
+                fetchTable();
+            });
+        }
+
+        function handleRemoveLoad(event) {
+            event.preventDefault();
+
+            const studentId = document.getElementById("student_id");
+            const formData = new FormData();
+
+            formData.append("student_id", studentId.value);
+            formData.append("faculty_load_id", this.dataset.load);
+
+            fetch("/admin/schedules", {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token()}}",
+                },
+                body: formData,
+            }).then((response) => {
+                if (!response.ok) return;
+                fetchTable();
+            });
+        }
+
+        function fetchTable() {
+            const studentId = document.getElementById("student_id");
+
+            fetch(`/admin/students/${studentId.value}/schedules`)
+                .then(async (response) => await response.text())
+                .then((html) => {
+                    const schedules = document.getElementById("schedules");
+                    schedules.innerHTML = html;
+
+                    new DataTable("#schedules-table");
+                    new DataTable("#faculty-loads-table");
+
+                    const addLoad = document.querySelector(".add-load");
+                    const removeLoad = document.querySelector(".remove-load");
+
+                    if (addLoad) {
+                        addLoad.addEventListener("click", handleAddLoad);
+                    }
+
+                    if (removeLoad) {
+                        removeLoad.addEventListener("click", handleRemoveLoad);
+                    }
+                });
+        }
+
+        function handleStudentIdChange(event) {
+            fetchTable();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const studentId = $("#student_id");
+            studentId.select2({
+                theme: "bootstrap-5",
+            });
+
+            studentId.on("select2:select", handleStudentIdChange);
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="row d-flex align-items-center">
+        <div class="card col-md-6 p-0">
+            <div class="card-body">
+                <form
+                    action=""
+                    method="post"
+                    id="filter-form"
+                    class="row"
+                    style="max-width: 38rem;">
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}" />
+                    <div class="col-md-6">
+                        <label for="school_year" class="form-label">
+                            School year
+                        </label>
+                        <select
+                            name="school_year"
+                            id="school_year"
+                            class="form-select">
+                            <option value="0" disabled selected>
+                                Select an option
+                            </option>
+                            {% for school_year in school_years %}
+                                <option value="{{ school_year }}">
+                                    {{ school_year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="semester" class="form-label"
+                            >Semester</label
+                        >
+                        <select
+                            name="semester"
+                            id="semester"
+                            class="form-select">
+                            <option value="0" disabled selected>
+                                Select an option
+                            </option>
+                            <option value="1st semester">1st semester</option>
+                            <option value="2nd semester">2nd semester</option>
+                        </select>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn mt-3 btn-primary">
+                                Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="data-container" class="col-md-6"></div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="card col-12 mt-3">
+            <div class="card-body">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card col-12">
+            <div class="card-body">
+                <h1 class="fw-bold mb-4">Faculty</h1>
+                <div class="table-responsive">
+                    <table id="instructors-table" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Instructor name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instructor in instructors %}
+                                <tr>
+                                    <td class="text-center">
+                                        {{ instructor.user.name }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filterForm = document.getElementById("filter-form");
+
+            filterForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const schoolYear = document.getElementById("school_year");
+                const semester = document.getElementById("semester");
+
+                if (schoolYear.value == 0 || semester.value == 0) return;
+
+                const formData = new FormData(this);
+
+                fetch("/admin/dashboard", {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then((response) => response.text())
+                    .then((html) => {
+                        const graphContainer =
+                            document.getElementById("data-container");
+
+                        graphContainer.innerHTML = html;
+                    });
+            });
+
+            const ctx = document.getElementById("chart");
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: JSON.parse(`{{ school_years|tojson }}`),
+                    datasets: [
+                        {
+                            label: "# of Enrolled students",
+                            data: JSON.parse(`{{ students|tojson }}`),
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        });
+
+        new DataTable("#instructors-table");
+    </script>
+{% endblock %}

@@ -1,0 +1,94 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <h2 class="h6 mb-3 fw-bold">{{ student.user.name }} - Study Load</h2>
+
+        <div class="table-responsive">
+            <table id="schedules-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Descriptive title</th>
+                        <th>Instructor</th>
+                        <th>Day & Time</th>
+                        <th>Room</th>
+                        <th class="text-center">Units</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in student.schedules %}
+                        <tr>
+                            <td>{{ schedule.subject.descriptive_title }}</td>
+                            <td>{{ schedule.instructor.user.name }}</td>
+                            <td>
+                                {{ schedule.day }}
+                                {{ schedule.time_start }}
+                                - {{ schedule.time_end }}
+                            </td>
+                            <td>{{ schedule.room }}</td>
+                            <td class="text-center">
+                                {{ schedule.subject.units }}
+                            </td>
+                            <td class="text-end">
+                                <a
+                                    href="#"
+                                    class="remove-load badge text-decoration-none text-bg-danger"
+                                    data-load="{{ schedule.id }}">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h2 class="h6 mb-3 fw-bold">Available subjects</h2>
+
+        <table id="faculty-loads-table" class="table">
+            <thead>
+                <tr>
+                    <th>Descriptive title</th>
+                    <th>Instructor</th>
+                    <th>Day & Time</th>
+                    <th class="text-center">Units</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for faculty_load in faculty_loads %}
+                    <tr>
+                        <td>{{ faculty_load.subject.descriptive_title }}</td>
+                        <td>{{ faculty_load.instructor.user.name }}</td>
+                        <td>
+                            {{ faculty_load.day }} {{ faculty_load.time_start }}
+                            - {{ faculty_load.time_end }}
+                        </td>
+                        <td class="text-center">
+                            {{ faculty_load.subject.units }}
+                        </td>
+                        <td class="text-end">
+                            {% if not student in faculty_load.students %}
+                                <a
+                                    href="#"
+                                    class="add-load badge text-decoration-none text-bg-success"
+                                    data-load="{{ faculty_load.id }}">
+                                    Add
+                                </a>
+                            {% else %}
+                                <a
+                                    href="#"
+                                    class="badge disabled text-decoration-none text-bg-secondary">
+                                    Enrolled
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

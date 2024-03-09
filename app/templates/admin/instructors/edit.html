@@ -1,0 +1,54 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="h4 fw-bold">Edit instructor</h1>
+
+            <form action="" method="post" style="max-width: 28rem;">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label for="department_id" class="form-label">
+                        Department
+                    </label>
+                    <select
+                        name="department_id"
+                        id="department_id"
+                        class="form-select">
+                        {% for department in departments %}
+                            {% if department == instructor.department %}
+                                <option value="{{ department.id }}" selected>
+                                    {{ department.name }}
+                                </option>
+                            {% else %}
+                                <option value="{{ department.id }}">
+                                    {{ department.name }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+
+                <div>
+                    <a href="/admin/instructors" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Update instructor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

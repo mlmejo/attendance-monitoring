@@ -1,0 +1,56 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex mb-3 align-items-center justify-content-between">
+                <h1 class="h4 fw-bold">Subjects</h1>
+                <a href="/admin/subjects/create" class="btn btn-primary">
+                    New subject
+                </a>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="course_id" class="form-label">Course</label>
+                    <select name="course_id" id="course_id" class="form-select">
+                        <option disabled selected>Select an option</option>
+                        {% for course in courses %}
+                            <option value="{{ course.id }}">
+                                {{ course.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div
+                id="table-container"
+                style="max-height: 400px; overflow-y: auto;">
+                <p class="text-center mb-0 p-2 border rounded">
+                    Select a course
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#subjects-table");
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const courseId = document.getElementById("course_id");
+
+            courseId.addEventListener("change", () => {
+                fetch(`/admin/courses/${courseId.value}/subjects`)
+                    .then(async (response) => await response.text())
+                    .then(async (html) => {
+                        const tableContainer =
+                            document.getElementById("table-container");
+                        tableContainer.innerHTML = html;
+                    });
+            });
+        });
+    </script>
+{% endblock %}

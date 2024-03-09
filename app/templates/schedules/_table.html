@@ -1,0 +1,76 @@
+<table id="attendance-table" class="table">
+    <thead>
+        <tr>
+            <th>Student name</th>
+            <th>Course</th>
+            <th>Time in</th>
+            <th>Image registration (Time in)</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in records %}
+            <tr>
+                <td>{{ entry.student.user.name }}</td>
+                <td>{{ entry.student.course.name }}</td>
+                <td>{{ entry.time_in.strftime('%m/%d/%Y %I:%M %p') }}</td>
+                <td>
+                    <a
+                        href="#"
+                        class="badge text-decoration-none text-bg-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#time-in-image-student{{ entry.student.id }}">
+                        View
+                    </a>
+                    <div
+                        class="modal fade"
+                        id="time-in-image-student{{ entry.student.id }}"
+                        tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1
+                                        class="modal-title fs-5"
+                                        id="exampleModalLabel">
+                                        Time in registration
+                                    </h1>
+                                    <button
+                                        type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div
+                                    class="modal-body d-flex justify-content-center">
+                                    <img
+                                        src="{{ url_for('uploaded_file', filename=entry.time_in_image) }}"
+                                        alt=""
+                                        height="300"
+                                        width="150" />
+                                </div>
+                                <div class="modal-footer">
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary">
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                {% if entry.tardy_status == "Late" %}
+                    <td class="text-danger fw-bold">Late</td>
+                {% elif entry.tardy_status == "Present" %}
+                    <td class="text-success fw-bold">Present</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

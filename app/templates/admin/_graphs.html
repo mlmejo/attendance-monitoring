@@ -1,0 +1,21 @@
+{% if notFound %}
+    <div class="alert alert-danger">
+        Schedule with that details has not been created yet.
+    </div>
+{% else %}
+    <table class="table mt-3 table-bordered">
+        <tbody>
+            <tr>
+                <td class="text-center align-middle" rowspan="3">
+                    {{ total_enrolled }}
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">{{ school_year }}</th>
+            </tr>
+            <tr>
+                <td class="text-center">Total Enrolled</td>
+            </tr>
+        </tbody>
+    </table>
+{% endif %}

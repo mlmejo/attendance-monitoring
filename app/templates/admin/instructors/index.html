@@ -1,0 +1,59 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <ul class="nav mb-3 nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin/instructors">
+                        Instructors
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/students">Students</a>
+                </li>
+            </ul>
+
+            <div class="d-flex mb-3 justify-content-between">
+                <h1 class="h4 fw-bold">Instructors</h1>
+                <a href="/admin/instructors/create" class="btn btn-primary">
+                    New instructor
+                </a>
+            </div>
+
+            <table id="instructors-table" class="table">
+                <thead>
+                    <tr>
+                        <td>Instructor name</td>
+                        <td>Department</td>
+                        <td class="text-end">Action</td>
+                    </tr>
+                </thead>
+                {% for instructor in instructors %}
+                    <tr>
+                        <td>{{ instructor.user.name }}</td>
+                        <td>{{ instructor.department.name }}</td>
+                        <td class="text-end">
+                            <a
+                                href="/admin/instructors/{{ instructor.id }}/edit"
+                                class="badge text-decoration-none text-bg-success">
+                                Edit
+                            </a>
+                            <a
+                                href="/admin/instructors/{{ instructor.id }}/delete"
+                                class="badge text-decoration-none text-bg-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#instructors-table");
+    </script>
+{% endblock %}

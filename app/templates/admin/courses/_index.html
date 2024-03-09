@@ -1,0 +1,40 @@
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex mb-3 align-items-center justify-content-between">
+            <h1 class="h4 fw-bold">Course</h1>
+            <a
+                href="/admin/departments/{{ department.id }}/courses/create"
+                class="btn btn-primary">
+                New course
+            </a>
+        </div>
+
+        <table id="courses-table" class="table">
+            <thead>
+                <tr>
+                    <th>Course name</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in department.courses %}
+                    <tr>
+                        <td>{{ course.name }}</td>
+                        <td class="text-end">
+                            <a
+                                href="/admin/courses/{{ course.id }}/edit"
+                                class="badge text-decoration-none text-bg-success">
+                                Edit
+                            </a>
+                            <a
+                                href="/admin/courses/{{ course.id }}/delete"
+                                class="badge text-decoration-none text-bg-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

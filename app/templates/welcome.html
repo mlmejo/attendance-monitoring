@@ -1,0 +1,57 @@
+{% extends "layouts/student.html" %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} m-auto mb-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div class="card-body">
+            <p>
+                Welcome {{ current_user.name }}, please scan a QR Code to record
+                you attendance!
+            </p>
+
+            <h2 class="h4 fw-bold">Your schedules</h2>
+            <div class="table-responsive">
+                <table id="schedules-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Descriptive title</th>
+                            <th>Instructor</th>
+                            <th>Day & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in current_user.student.schedules %}
+                            <tr>
+                                <td>
+                                    {{ schedule.subject.descriptive_title }}
+                                </td>
+                                <td>{{ schedule.instructor.user.name }}</td>
+                                <td>
+                                    {{ schedule.day }}
+                                    {{ schedule.time_start.strftime('%I:%M %p') }}
+                                    -
+                                    {{ schedule.time_end.strftime('%I:%M %p') }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#schedules-table");
+    </script>
+{% endblock %}

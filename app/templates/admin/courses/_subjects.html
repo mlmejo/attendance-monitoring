@@ -1,0 +1,30 @@
+{% from 'admin/subjects/_row.html' import row %}
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <th
+                class="text-center text-uppercase"
+                style="background-color: rgba(0, 0, 0, 0.05);"
+                colspan="6">
+                Department: {{ course.department.name }}
+            </th>
+        </tr>
+        <tr>
+            <th
+                class="text-center text-uppercase"
+                style="background-color: rgba(0, 0, 0, 0.05);"
+                colspan="6">
+                Course: {{ course.name }}
+            </th>
+        </tr>
+
+        {{ row('First year', 'First semester', subjects) }}
+        {{ row('First year', 'Second semester', subjects) }}
+        {{ row('Second year', 'First semester', subjects) }}
+        {{ row('Second year', 'Second semester', subjects) }}
+        {{ row('Third year', 'First semester', subjects) }}
+        {{ row('Third year', 'Second semester', subjects) }}
+        {{ row('Fourth year', 'First semester', subjects) }}
+        {{ row('Fourth year', 'Second semester', subjects) }}
+    </tbody>
+</table>

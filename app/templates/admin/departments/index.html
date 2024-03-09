@@ -1,0 +1,48 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex mb-3 align-items-center justify-content-between">
+                <h1 class="h4 fw-bold">Departments</h1>
+                <a href="/admin/departments/create" class="btn btn-primary">
+                    New department
+                </a>
+            </div>
+
+            <table id="departments-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Department name</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in departments %}
+                        <tr>
+                            <td>{{ department.name }}</td>
+                            <td class="text-end">
+                                <a
+                                    href="/admin/departments/{{ department.id }}/edit"
+                                    class="badge text-decoration-none text-bg-success">
+                                    Edit
+                                </a>
+                                <a
+                                    href="/admin/departments/{{ department.id }}/delete"
+                                    class="badge text-decoration-none text-bg-danger">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#departments-table");
+    </script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="h4 fw-bold">Delete department</h1>
+
+            <form action="" method="post" style="max-width: 28rem;">
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}" />
+
+                <p>
+                    Are you sure you want to delete
+                    <strong>{{ department.name }}</strong>?
+                </p>
+
+                <div>
+                    <a href="/admin/departments" class="btn btn-secondary"
+                        >Cancel</a
+                    >
+                    <button type="submit" class="btn btn-danger">
+                        Delete department
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

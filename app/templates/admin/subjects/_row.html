@@ -1,0 +1,51 @@
+{% macro row(year_level, semester, subjects) %}
+    <tr>
+        <th
+            class="text-center text-uppercase"
+            style="background-color: rgba(0, 0, 0, 0.05);"
+            colspan="6">
+            {{ year_level }}
+        </th>
+    </tr>
+    <tr>
+        <th
+            class="text-center text-uppercase"
+            style="background-color: rgba(0, 0, 0, 0.05);"
+            colspan="6">
+            {{ semester }}
+        </th>
+    </tr>
+    <tr>
+        <th>Descriptive title</th>
+        <th>Course number</th>
+        <th>Lecture hours</th>
+        <th>Laboratory hours</th>
+        <th>Units</th>
+        <th class="text-end">Action</th>
+    </tr>
+    {% for subject in subjects[year_level][semester] %}
+        <tr>
+            <td>{{ subject.descriptive_title }}</td>
+            <td>{{ subject.course_number }}</td>
+            <td>{{ subject.lecture_hours }}</td>
+            <td>{{ subject.laboratory_hours }}</td>
+            <td>{{ subject.units }}</td>
+            <td class="text-end">
+                <a
+                    href="/admin/subjects/{{ subject.id }}/edit"
+                    class="badge text-decoration-none text-bg-success">
+                    Edit
+                </a>
+                <a
+                    href="/admin/subjects/{{ subject.id }}/delete"
+                    class="badge text-decoration-none text-bg-danger">
+                    Delete
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td class="text-center" colspan="6">No subjects available.</td>
+        </tr>
+    {% endfor %}
+{% endmacro %}

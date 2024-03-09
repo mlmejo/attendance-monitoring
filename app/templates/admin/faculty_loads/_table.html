@@ -1,0 +1,52 @@
+<table id="subjects-table" class="table">
+    <thead>
+        <tr>
+            <th>Descriptive title</th>
+            <th class="text-center">Course number</th>
+            <th class="text-center">Lecture hours</th>
+            <th class="text-center">Laboratory hours</th>
+            <th class="text-center">Units</th>
+            <th class="text-end">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for subject in subjects %}
+            <tr>
+                <td>{{ subject.descriptive_title }}</td>
+                <td class="text-center">{{ subject.course_number }}</td>
+                <td class="text-center">{{ subject.lecture_hours }}</td>
+                <td class="text-center">{{ subject.laboratory_hours }}</td>
+                <td class="text-center">{{ subject.units }}</td>
+                <td class="text-end">
+                    {% if instructor.has_subject(subject) %}
+                        <a
+                            href="#"
+                            class="add-subject disabled badge text-decoration-none text-bg-success"
+                            data-subject="{{ subject.id }}">
+                            Add
+                        </a>
+                        <a
+                            href="#"
+                            class="remove-subject badge text-decoration-none text-bg-danger"
+                            data-subject="{{ subject.id }}">
+                            Remove
+                        </a>
+                    {% else %}
+                        <a
+                            href="#"
+                            class="add-subject badge text-decoration-none text-bg-success"
+                            data-subject="{{ subject.id }}">
+                            Add
+                        </a>
+                        <a
+                            href="#"
+                            class="remove-subject disabled badge text-decoration-none text-bg-danger"
+                            data-subject="{{ subject.id }}">
+                            Remove
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

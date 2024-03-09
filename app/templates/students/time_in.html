@@ -1,0 +1,77 @@
+{% extends "layouts/student.html" %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div
+                    class="alert alert-{{ category }} m-auto mb-3"
+                    style="max-width: 36rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card m-auto" style="max-width: 36rem;">
+        <div class="card-body">
+            <h2 class="h4 fw-bold">
+                {{ faculty_load.subject.descriptive_title }}
+            </h2>
+            <p class="mb-0 text-muted">
+                Instructor: {{ faculty_load.instructor.user.name }}
+            </p>
+            <p class="text-muted">
+                Day & Time: {{ faculty_load.day }}
+                {{ faculty_load.time_start.strftime('%I:%M %p') }}
+                - {{ faculty_load.time_end.strftime('%I:%M %p') }}
+            </p>
+
+            <div class="d-flex justify-content-center">
+                <img
+                    src="{{ url_for('static', filename='images/default-profile.png') }}"
+                    alt=""
+                    class="img-thumbnail mb-2"
+                    width="150"
+                    height="150" />
+            </div>
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">
+                        Face recognition
+                    </label>
+                    <input
+                        type="file"
+                        name="image"
+                        id="image"
+                        class="form-control"
+                        required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document
+            .getElementById("image")
+            .addEventListener("change", function (event) {
+                var input = event.target;
+                var reader = new FileReader();
+
+                reader.onload = function () {
+                    var dataURL = reader.result;
+                    var imagePreview = document.querySelector(".img-thumbnail");
+                    imagePreview.src = dataURL;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            });
+    </script>
+{% endblock %}

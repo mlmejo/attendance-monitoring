@@ -1,0 +1,33 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <h1 class="h4 fw-bold">Edit department</h1>
+
+    <form action="" method="post" style="max-width: 28rem;">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+
+            {% if not form.name.errors %}
+                {{ form.name(class="form-control") }}
+            {% else %}
+                {{ form.name(class="form-control is-invalid") }}
+                <div class="invalid-feedback">{{ form.name.errors[0] }}</div>
+            {% endif %}
+        </div>
+
+        <div>
+            <a href="/admin/departments" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                Update department
+            </button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        new DataTable("#courses-table");
+    </script>
+{% endblock %}

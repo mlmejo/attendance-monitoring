@@ -1,0 +1,229 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1 class="h4 fw-bold">Faculty load</h1>
+
+            <form action="" method="post" id="load-form">
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="instructor_id" class="form-label">
+                            Instructor
+                        </label>
+                        <select
+                            name="instructor_id"
+                            id="instructor_id"
+                            class="form-select">
+                            <option value="0" selected disabled>
+                                Select an option
+                            </option>
+                            {% for instructor in instructors %}
+                                <option value="{{ instructor.id }}">
+                                    {{ instructor.user.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div
+                            class="invalid-feedback d-none"
+                            id="instructor_id_feedback">
+                            Please select an instructor.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="school_year" class="form-label">
+                            School year
+                        </label>
+                        <input
+                            type="text"
+                            name="school_year"
+                            id="school_year"
+                            class="form-control"
+                            required />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="day" class="form-label">Days</label>
+                        <input
+                            type="text"
+                            name="day"
+                            id="day"
+                            class="form-control"
+                            required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="semester" class="form-label">
+                            Semester
+                        </label>
+                        <select
+                            name="semester"
+                            id="semester"
+                            class="form-select">
+                            <option value="1st semester">1st semester</option>
+                            <option value="2nd semester">2nd semester</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="time_start" class="form-label">
+                            Starting time
+                        </label>
+                        <input
+                            type="time"
+                            name="time_start"
+                            id="time_start"
+                            class="form-control"
+                            required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="time_end" class="form-label">
+                            Ending time
+                        </label>
+                        <input
+                            type="time"
+                            name="time_end"
+                            id="time_end"
+                            class="form-control"
+                            required />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="room" class="form-label">Room</label>
+                        <input type="text" name="room" id="room" class="form-control" required />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div id="table-container" class="table-responsive">
+                Select an instructor to view load.
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const subjectsTable = new DataTable("#subjects-table");
+
+        function validateInstructor() {
+            const instructorId = document.getElementById("instructor_id");
+            const instructorIdFeedback = document.getElementById(
+                "instructor_id_feedback",
+            );
+
+            if (instructorId.value != 0) {
+                instructorId.classList.remove("is-invalid");
+                instructorIdFeedback.classList.add("d-none");
+
+                return true;
+            }
+
+            instructorId.classList.add("is-invalid");
+            instructorIdFeedback.classList.remove("d-none");
+
+            return false;
+        }
+
+        function fetchTable(instructorId) {
+            const formData = new FormData();
+            formData.append("instructor_id", instructorId);
+
+            fetch("/admin/faculty-loads/_table", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token() }}",
+                },
+                body: formData,
+            })
+                .then(async (response) => await response.text())
+                .then(async (html) => {
+                    await (document.getElementById(
+                        "table-container",
+                    ).innerHTML = html);
+
+                    new DataTable("#subjects-table");
+
+                    document
+                        .querySelector(".add-subject")
+                        .addEventListener("click", addSubjectHandler);
+
+                    document
+                        .querySelector(".remove-subject")
+                        .addEventListener("click", removeSubjectHandler);
+                });
+        }
+
+        function addSubjectHandler(event) {
+            event.preventDefault();
+
+            const loadForm = document.getElementById("load-form");
+            const instructorId = document.getElementById("instructor_id");
+
+            if (!(loadForm.reportValidity() && validateInstructor())) {
+                return;
+            }
+
+            const formData = new FormData(loadForm);
+            formData.append("subject_id", this.dataset.subject);
+
+            fetch("/admin/faculty-loads", {
+                method: "POST",
+                body: formData,
+            }).then((response) => {
+                if (!response.ok) return;
+                fetchTable(instructorId.value);
+            });
+        }
+
+        function removeSubjectHandler(event) {
+            event.preventDefault();
+
+            const instructorId = document.getElementById("instructor_id");
+
+            if (!validateInstructor()) {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("instructor_id", instructorId.value);
+            formData.append("subject_id", this.dataset.subject);
+
+            fetch("/admin/faculty-loads", {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token() }}",
+                },
+                body: formData,
+            }).then((response) => {
+                if (!response.ok) return;
+                fetchTable(instructorId.value);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const instructorId = $("#instructor_id");
+            instructorId.select2({
+                theme: "bootstrap-5",
+            });
+
+            instructorId.on("select2:select", function () {
+                if (instructorId.val() != 0) {
+                    fetchTable(instructorId.val());
+                }
+            });
+        });
+    </script>
+{% endblock %}

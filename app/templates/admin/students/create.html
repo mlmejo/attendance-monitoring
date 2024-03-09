@@ -1,0 +1,123 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="h4 fw-bold">Create student</h1>
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form.student_id.label(class="form-label") }}
+                        {{ form.student_id(class="form-control", placeholder="e.g. M1-1100") }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.course_id.label(class="form-label") }}
+                        {{ form.course_id(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.year_level.label(class="form-label") }}
+                        {{ form.year_level(class="form-select") }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form.contact_number.label(class="form-label") }}
+                        {{ form.contact_number(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.birthdate.label(class="form-label") }}
+                        {{ form.birthdate(class="form-select") }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.gender.label(class="form-label") }}
+                        {{ form.gender(class="form-select") }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form.last_name.label(class="form-label") }}
+                        {{ form.last_name(class="form-control") }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form.first_name.label(class="form-label") }}
+                        {{ form.first_name(class="form-control") }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form.middle_name.label(class="form-label") }}
+                        {{ form.middle_name(class="form-control") }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div
+                        class="col-md-6 d-flex flex-column justify-content-start">
+                        <img
+                            src="{{ url_for('static', filename='images/default-profile.png') }}"
+                            alt=""
+                            class="img-thumbnail mb-2"
+                            width="150"
+                            height="150" />
+                        <div>
+                            <label for="image" class="form-label">
+                                Image registration
+                            </label>
+                            <input
+                                type="file"
+                                name="image"
+                                id="image"
+                                class="form-control"
+                                required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control") }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <div>
+                        <a href="/admin/students" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Create student
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document
+            .getElementById("image")
+            .addEventListener("change", function (event) {
+                var input = event.target;
+                var reader = new FileReader();
+
+                reader.onload = function () {
+                    var dataURL = reader.result;
+                    var imagePreview = document.querySelector(".img-thumbnail");
+                    imagePreview.src = dataURL;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            });
+    </script>
+{% endblock %}

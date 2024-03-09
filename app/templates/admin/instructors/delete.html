@@ -1,0 +1,21 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+    <h1 class="h4 fw-bold">Delete instructor</h1>
+
+    <form action="" method="post" style="max-width: 28rem;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <p>
+            Are you sure you want to delete
+            <strong>{{ instructor.user.name }}</strong>?
+        </p>
+
+        <div>
+            <a href="/admin/instructors" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger">
+                Delete instructor
+            </button>
+        </div>
+    </form>
+{% endblock %}
